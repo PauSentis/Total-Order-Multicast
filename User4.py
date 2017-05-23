@@ -27,6 +27,8 @@ if __name__ == '__main__':
     user.multicastLamport("TASK 2",tracker,sequencer)
     
     sleep(60)
-    user.process_msg()
+    #user.process_msg()
+    user.process_msg_Lamport()
+
     sleep(1)
     serve_forever()

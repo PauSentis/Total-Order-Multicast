@@ -7,13 +7,14 @@ import User
 
 class User(object):
 
-    _tell = ["multicast","receive","process_msg","multicastLamport","receiveLamport","reciveACK"]  #asincron
+    _tell = ["multicast","receive","process_msg","multicastLamport","receiveLamport","reciveACK","process_msg_Lamport"]  #asincron
     _ask = ["joinTracker"]   #sincron
     _ref = ["joinTracker","multicast","multicastLamport","receiveLamport","reciveACK"]
 
     def __init__(self):
         self.timeStamp = 0
         self.recivedMessages = {}
+        self.recivedMessagesLamport = []
         self.queueMessages = {}
         self.messagesACKs = []
         self.members = {}
@@ -43,10 +44,6 @@ class User(object):
     #proces messages by stamp order:    
     def process_msg(self):
 
-        print "Messages"
-        print self.recivedMessages
-
-        '''
         allMessages = True
         keys = list(self.recivedMessages.keys())
 
@@ -59,7 +56,7 @@ class User(object):
 
             if allMessages == True:        
                 print self.recivedMessages
-        '''
+
 
     def joinTracker(self,tracker,hostUser):
          tracker.join(self.url,hostUser)   
@@ -86,32 +83,29 @@ class User(object):
 
 
     def reciveACK(self,message):
-
-        #si es el primer cop que ens arriba un missatge els afegim:
-        if message not in self.messagesACKs:
-            self.messagesACKs.append(message)
+        #print self.queueMessages
 
         if message not in self.queueMessages:
             self.queueMessages.update({message:1})
             print "ACKS_value: " + message + ": " + str(1)
         else:
             self.value = self.queueMessages.get(message)
-
-            self.queueMessages.update({message: (self.value + 1)})
-            print "ACKS_value: " + message + ": " + str((self.value + 1))
+            self.value = self.value + 1
+            self.queueMessages.update({message: self.value })
+            print "ACKS_value: " + message + ": " + str(self.value)
 
         #comprobar missatge rebut si te tots els ACKS:
-        if self.queueMessages.get(message) == len(self.members):
+        if self.queueMessages.get(message) >= len(self.members) - 1:
             if message == self.messagesACKs[0]:
-                self.recivedMessages.update({message: ""})
+                self.recivedMessagesLamport.append(message)
                 self.messagesACKs.pop(0)
-
+        else:       
         #comprovar si el primer de la llista ja te tots els ACKS:
-        acks = self.queueMessages.get(self.messagesACKs[0])
+            self.acks = self.queueMessages.get(self.messagesACKs[0])
 
-        if acks >= len(self.members):
-            self.recivedMessages.update({self.messagesACKs[0]: ""})
-            self.messagesACKs.pop(0)
+            if self.acks >= len(self.members) - 1:
+                self.recivedMessagesLamport.append(self.messagesACKs[0])
+                self.messagesACKs.pop(0)
         
 
     def receiveLamport(self, message, timeStampRecived):
@@ -119,30 +113,42 @@ class User(object):
         #guardar missatge amb el timeStamp local a la cua:
         if self.timeStamp < timeStampRecived:
 
-            self.queueMessages.update({message:self.timeStamp})
+            #self.queueMessages.update({message:self.timeStamp})
             print self.id + " : " + str(message)
+            self.messagesACKs.append(message)
 
             self.timeStamp = timeStampRecived + 1 
             
         else:
-            self.queueMessages.update({message:self.timeStamp})
             print self.id + " : " + str(message) 
+            self.messagesACKs.append(message)
 
             self.timeStamp = self.timeStamp + 1
 
 
         #enviar ACK del missatge rebut:
-        #print "members:" + str(self.members)
         for member in self.members:
-            sleep(0.5)
+            sleep(0.1)
             #get USER PROXY & HOST PROXY
             hostUser = self.members.get(member)
             user = hostUser.lookup_url(member, User)
 
-            user.reciveACK(message)
+            if member != self.url:
+                user.reciveACK(message)
 
 
+    def process_msg_Lamport(self):
 
+        while len(self.messagesACKs) > 0:
+            self.acks = self.queueMessages.get(self.messagesACKs[0])
+
+            if self.acks >= len(self.members) - 1:
+                self.recivedMessagesLamport.append(self.messagesACKs[0])
+                self.messagesACKs.pop(0)
+
+
+        print "Messages"
+        print self.recivedMessagesLamport       
 
 
 
