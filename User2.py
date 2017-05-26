@@ -24,13 +24,14 @@ if __name__ == '__main__':
     host2 = h.lookup_url('http://127.0.0.1:1230', Host)
     sequencer = host2.lookup_url('http://127.0.0.1:1230/SequencerID', Sequencer.Sequencer)
 
-    #user.multicast("PAU",tracker,sequencer
+
     sleep(15)
-    user.multicastLamport("PAU",tracker,sequencer)
+    user.multicast("PAU",tracker,sequencer)
+    #user.multicastLamport("PAU",tracker,sequencer)
     
     sleep(70)
-    #user.process_msg()
-    user.process_msg_Lamport()
+    user.process_msg()
+    #user.process_msg_Lamport()
 
     sleep(1)
     serve_forever()
