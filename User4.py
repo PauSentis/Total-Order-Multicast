@@ -18,13 +18,15 @@ if __name__ == '__main__':
     tracker = host.lookup_url('http://127.0.0.1:1220/TrackerID', Tracker.Tracker)
     
     user.joinTracker(tracker,h)
+    user.setID(4)
 
     #Sequencer Host
     host2 = h.lookup_url('http://127.0.0.1:1230', Host)
     sequencer = host2.lookup_url('http://127.0.0.1:1230/SequencerID', Sequencer.Sequencer)
 
     #user.multicast("TASK 2",tracker,sequencer)
-    user.multicastLamport("TASK 2",tracker,sequencer)
+    sleep(25)
+    user.multicastLamport("TASK",tracker,sequencer)
     
     sleep(60)
     #user.process_msg()
