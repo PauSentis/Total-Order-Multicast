@@ -48,18 +48,21 @@ class User(object):
     #proces messages by stamp order:    
     def process_msg(self):
 
-        allMessages = True
-        keys = list(self.recivedMessages.keys())
+        allMessages = False
 
-        if len(keys) > 1: 
-            maxTime = max(keys)
+        while allMessages == False:  
+            keys = list(self.recivedMessages.keys()) 
+            allMessages = True
+            
+            if len(keys) > 1: 
+                maxTime = max(keys)
 
-            for timeStamp in range(1,maxTime):
-                if timeStamp not in keys:
-                    allMessages = False
+                for timeStamp in range(1,maxTime):
+                    if timeStamp not in keys:
+                        allMessages = False
 
-            if allMessages == True:        
-                print self.recivedMessages
+        if allMessages == True:        
+            print self.recivedMessages
 
 
     def joinTracker(self,tracker,hostUser):
