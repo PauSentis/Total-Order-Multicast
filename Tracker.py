@@ -4,7 +4,7 @@ class Tracker(object):
 
     _tell = ["join","leave","announce","trackerTimeCheck","init_start","stop_interval","init"]  #asincron
     _ask = ["get_members"]   #sincron
-    _ref = ["join","get_members","announce"]
+    _ref = ["join","get_members","announce","trackerTimeCheck"]
 
 
     def __init__(self):
@@ -32,13 +32,15 @@ class Tracker(object):
         deadPeers = []
 
         for peer in self.members:
-            print peer +" TIME: " + str(self.times[peer])
+            #print peer +" TIME: " + str(self.times[peer])
             self.announce(peer,self.times[peer] - 1)
 
             if self.times[peer] < 1:
                 
                 hostUser = self.members[peer]
 
+                #print peer
+                #print hostUser
                 #peerPrx = hostUser.lookup_url(peer, User)
                 #peerPrx.stop_interval()
 

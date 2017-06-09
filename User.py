@@ -9,7 +9,7 @@ class User(object):
 
     _tell = ["multicast","receive","process_msg","multicastLamport","receiveLamport","reciveACK","process_msg_Lamport","setID","init_start","stop_interval","announce"]  #asincron
     _ask = ["joinTracker"]   #sincron
-    _ref = ["joinTracker","multicast","multicastLamport","receiveLamport","reciveACK","init_start","announce"]
+    _ref = ["joinTracker","multicast","multicastLamport","receiveLamport","reciveACK","init_start","announce","stop_interval"]
 
     def __init__(self):
         self.timeStamp = 0
@@ -36,6 +36,7 @@ class User(object):
             sleep(randint(1,10))
             #get USER PROXY & HOST PROXY
             hostUser = self.members.get(member)
+            #print hostUser
             user = hostUser.lookup_url(member, User)
             user.receive(message,self.timeStamp) 
         
