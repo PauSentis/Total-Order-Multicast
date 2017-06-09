@@ -7,9 +7,9 @@ import User
 
 class User(object):
 
-    _tell = ["multicast","receive","process_msg","multicastLamport","receiveLamport","reciveACK","process_msg_Lamport","setID"]  #asincron
+    _tell = ["multicast","receive","process_msg","multicastLamport","receiveLamport","reciveACK","process_msg_Lamport","setID","init_start","stop_interval","announce"]  #asincron
     _ask = ["joinTracker"]   #sincron
-    _ref = ["joinTracker","multicast","multicastLamport","receiveLamport","reciveACK"]
+    _ref = ["joinTracker","multicast","multicastLamport","receiveLamport","reciveACK","init_start","announce"]
 
     def __init__(self):
         self.timeStamp = 0
@@ -175,9 +175,20 @@ class User(object):
 
         print "Messages"
         print self.recivedMessagesLamport
-        
+    
 
+    def announce(self,tracker):
+        tracker.announce(self.url,11)
 
+    #INTERVALS:
+    def init_start(self,tracker,hostPeer):
+        self.peerAnounce = interval(hostPeer, 3, self.proxy, "announce", tracker)   
+        later(70, self.proxy, "stop_interval")
+
+    def stop_interval(self):
+        print self.id+": stopping interval"
+
+        self.peerAnounce.set()
 
 
 
