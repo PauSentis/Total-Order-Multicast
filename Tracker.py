@@ -4,7 +4,7 @@ class Tracker(object):
 
     _tell = ["join","leave","announce","trackerTimeCheck","init_start","stop_interval","init"]  #asincron
     _ask = ["get_members"]   #sincron
-    _ref = ["join","get_members","announce","trackerTimeCheck"]
+    _ref = ["join","get_members","announce"]
 
 
     def __init__(self):
@@ -36,7 +36,7 @@ class Tracker(object):
             self.announce(peer,self.times[peer] - 1)
 
             if self.times[peer] < 1:
-                
+
                 hostUser = self.members[peer]
 
                 #print peer
@@ -53,8 +53,7 @@ class Tracker(object):
     #INTERVALS:
     def init_start(self):
         self.timeCheck = interval(h,1, self.proxy, "trackerTimeCheck")
-
-        later(70, self.proxy, "stop_interval")
+        later(300, self.proxy, "stop_interval")
 
     def stop_interval(self):
         print "Tracker: stopping interval"
@@ -66,10 +65,8 @@ if __name__ == '__main__':
 
     #Tracker Host
     h = create_host('http://127.0.0.1:1220')
-    tracker = h.spawn("TrackerID" , Tracker)  
+    tracker = h.spawn("TrackerID" , Tracker)
 
     tracker.init_start()
 
     serve_forever()
-
-

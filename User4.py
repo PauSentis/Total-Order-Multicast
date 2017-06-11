@@ -10,24 +10,26 @@ if __name__ == '__main__':
     set_context()
 
     #User Host
-    h = create_host('http://127.0.0.1:1243')
+    h = create_host('http://127.0.0.1:1244')
     user = h.spawn("user4", User.User)
+    user.setID(4)
 
     #Tracker Host
     host = h.lookup_url('http://127.0.0.1:1220', Host)
     tracker = host.lookup_url('http://127.0.0.1:1220/TrackerID', Tracker.Tracker)
-    
     user.joinTracker(tracker,h)
-    user.setID(4)
+    user.setTracker(tracker)
+    user.init_start(h)
+
 
     #Sequencer Host
     host2 = h.lookup_url('http://127.0.0.1:1230', Host)
-    sequencer = host2.lookup_url('http://127.0.0.1:1230/SequencerID', Sequencer.Sequencer)
-    
+    user.setHosts(h,host2)
+
     sleep(25)
-    user.multicast("TASK",tracker,sequencer)
-    #user.multicastLamport("TASK",tracker,sequencer)
-    
+    user.multicast("TASK")
+    #user.multicastLamport("TASK")
+
     sleep(60)
     user.process_msg()
     #user.process_msg_Lamport()

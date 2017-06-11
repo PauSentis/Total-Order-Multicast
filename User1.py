@@ -15,7 +15,7 @@ if __name__ == '__main__':
     set_context()
 
     #User Host
-    h = create_host('http://127.0.0.1:1240')
+    h = create_host('http://127.0.0.1:1241')
     user = h.spawn("user1", User.User)
     user.setID(1)
 
@@ -23,15 +23,17 @@ if __name__ == '__main__':
     host = h.lookup_url('http://127.0.0.1:1220', Host)
     tracker = host.lookup_url('http://127.0.0.1:1220/TrackerID', Tracker.Tracker)
     user.joinTracker(tracker,h)
-   
+    user.setTracker(tracker)
+    user.init_start(h)
+
 
     #Sequencer Host
     host2 = h.lookup_url('http://127.0.0.1:1230', Host)
-    sequencer = host2.lookup_url('http://127.0.0.1:1230/SequencerID', Sequencer.Sequencer)
+    user.setHosts(h,host2)
 
     sleep(5)
-    user.multicast("ARNAU",tracker,sequencer)
-    #user.multicastLamport("ARNAU",tracker,sequencer)
+    user.multicast("ARNAU")
+    #user.multicastLamport("ARNAU")
 
     sleep(60)
     user.process_msg()
@@ -39,7 +41,7 @@ if __name__ == '__main__':
     sleep(1)
 
     serve_forever()
-    
+
     '''
     try:
     except socket_error as serr:

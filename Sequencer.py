@@ -5,7 +5,7 @@ import Tracker
 
 class Sequencer(object):
 
-    _tell = []  #asincron
+    _tell = ["setTimeStamp"]  #asincron
     _ask = ["sequence"]   #sincron
     _ref = []
 
@@ -18,6 +18,9 @@ class Sequencer(object):
         self.timeStamp = self.timeStamp + 1
         return self.timeStamp
 
+    def setTimeStamp(self, time):
+        self.timeStamp = time
+
 if __name__ == '__main__':
 
     set_context()
@@ -26,4 +29,3 @@ if __name__ == '__main__':
     h = create_host('http://127.0.0.1:1230')
     sequencer = h.spawn("SequencerID", Sequencer)
     serve_forever()
-    
