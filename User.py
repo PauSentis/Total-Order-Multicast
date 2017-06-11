@@ -78,10 +78,8 @@ class User(object):
             time=max(timeStamps)
             sequencer.setTimeStamp(time)
 
-            for member in self.members:
-                hostUser = self.members.get(member)
-                user = hostUser.lookup_url(member, User)
-                user.newSequencer(s)
+            for member in usersProxies:
+                member.newSequencer(s)
 
 
     def getMaxTimeStamp(self):
