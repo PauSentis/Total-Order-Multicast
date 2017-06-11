@@ -7,8 +7,8 @@ import User
 
 class User(object):
 
-    _tell = ["multicast","receive","process_msg","multicastLamport","receiveLamport","reciveACK","process_msg_Lamport","setID","init_start","stop_interval","announce","newSequencer","bully","getBullyOn"]  #asincron
-    _ask = ["joinTracker","setHosts","setTracker","getMaxTimeStamp"]   #sincron
+    _tell = ["multicast","receive","process_msg","multicastLamport","receiveLamport","reciveACK","process_msg_Lamport","setID","init_start","stop_interval","announce","newSequencer","bully"]  #asincron
+    _ask = ["joinTracker","setHosts","setTracker","getMaxTimeStamp","getBullyOn"]   #sincron
     _ref = ["joinTracker","setTracker"]
 
     def __init__(self):
@@ -54,8 +54,8 @@ class User(object):
             hostUser = self.members.get(member)
             user = hostUser.lookup_url(member, User)
             usersProxies.append(user)
-            if user.getBullyOn:
-                if user != self.proxy:
+            if user != self.proxy:
+                if user.getBullyOn():
                     if  self.identification < int(member[26:]):
                         election = False
                         break
@@ -133,7 +133,16 @@ class User(object):
         except:
             self.toSend.append(message)
             if not self.bullyON:
-                self.bully(message)
+                trobat = False
+                for member in self.members:
+                    hostUser = self.members.get(member)
+                    user = hostUser.lookup_url(member, User)
+                    if user != self.proxy:
+                        if user.getBullyOn():
+                            trobat = True
+
+                if not trobat:
+                    self.bully(message)
 
 
     #sequencer use this method to deliver:
