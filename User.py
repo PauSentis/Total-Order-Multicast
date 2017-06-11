@@ -249,19 +249,19 @@ class User(object):
         '''
 
     def process_msg_Lamport(self):
-        self.allMessagesQueue = []
+        allMessagesQueue = []
         for keyTime in self.recivedMessages:
             for value in self.recivedMessages.get(keyTime):
                 if value != " ":
-                    self.allMessagesQueue.append(value)
+                    allMessagesQueue.append(value)
 
 
-        while len(self.allMessagesQueue) > 0:
-            self.acks = self.queueMessages.get(self.allMessagesQueue[0])
+        while len(allMessagesQueue) > 0:
+            self.acks = self.queueMessages.get(allMessagesQueue[0])
 
             if self.acks >= len(self.members) - 1:
-                self.recivedMessagesLamport.append(self.allMessagesQueue[0])
-                self.allMessagesQueue.pop(0)
+                self.recivedMessagesLamport.append(allMessagesQueue[0])
+                allMessagesQueue.pop(0)
 
         print "Messages"
         print self.recivedMessagesLamport
