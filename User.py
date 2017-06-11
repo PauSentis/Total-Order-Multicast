@@ -27,7 +27,6 @@ class User(object):
         self.toSend = []
 
         self.members = {}
-        self.value = 0
         self.identification = 0
 
     def setHosts(self, hostSelf, hostSequencer):
@@ -194,15 +193,15 @@ class User(object):
     def receiveLamport(self, message, timeStampRecived, ide, total):
         print message + ":    " +  str(timeStampRecived) + ":" + str(ide)
         if not self.recivedMessages.get(timeStampRecived):
-            self.values = [" "]*total
+            values = [" "]*total
 
-            self.values[ide-1] = message
-            self.recivedMessages.update({timeStampRecived : self.values})
+            values[ide-1] = message
+            self.recivedMessages.update({timeStampRecived : values})
 
         else:
-            self.values = self.recivedMessages.get(timeStampRecived)
-            self.values[ide-1] = message
-            self.recivedMessages.update({timeStampRecived : self.values})
+            values = self.recivedMessages.get(timeStampRecived)
+            values[ide-1] = message
+            self.recivedMessages.update({timeStampRecived : values})
 
         if self.timeStamp < timeStampRecived:
             self.timeStamp = (timeStampRecived + 1)
@@ -230,11 +229,11 @@ class User(object):
             self.queueMessages.update({message:1})
             print "ACKS_value: " + message + ": " + str(1)
         else:
-            self.value = self.queueMessages.get(message)
-            self.value = self.value + 1
+            value = self.queueMessages.get(message)
+            value = value + 1
 
-            self.queueMessages.update({message: self.value})
-            print "ACKS_value: " + message + ": " + str(self.value)
+            self.queueMessages.update({message: value})
+            print "ACKS_value: " + message + ": " + str(value)
 
         '''
         #comprobar missatge rebut si te tots els ACKS:
